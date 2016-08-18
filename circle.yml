@@ -1,0 +1,29 @@
+dependencies:
+  pre:
+    - sudo apt-get update; sudo apt-get install zookeeperd
+    - curl -SL http://www.us.apache.org/dist/kafka/0.8.2.2/kafka_2.11-0.8.2.2.tgz | tar xz
+
+machine:
+  services:
+    - mysql
+    - cassandra
+    - elasticsearch
+  java:
+    version: openjdk8
+  post:
+    - nohup bash -c "cd kafka_* && bin/kafka-server-start.sh config/server.properties >/dev/null 2>&1"
+
+database:
+  override:
+    - mysql -u ubuntu -e 'SET GLOBAL innodb_file_format=Barracuda'
+    - mysql -u ubuntu -e 'create database if not exists zipkin'
+    - mysql -u ubuntu -Dzipkin < zipkin-storage/mysql/src/main/resources/mysql.sql
+
+dependencies:
+  override:
+    - ./mvnw dependency:go-offline
+
+test:
+  override:
+    - MYSQL_USER=ubuntu ./mvnw install -nsu
+
