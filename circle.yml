@@ -11,7 +11,7 @@ machine:
     - ./kafka_*/bin/kafka-server-start.sh ./kafka_*/config/server.properties:
         background: true
   environment:
-    MYSQL_USER=ubuntu
+    MYSQL_USER: ubuntu
 
 dependencies:
   override:
