@@ -7,7 +7,8 @@ machine:
     version: openjdk8
   post:
     - curl -SL http://www.us.apache.org/dist/kafka/0.8.2.2/kafka_2.11-0.8.2.2.tgz | tar xz
-    - ./kafka_*/bin/kafka-server-start.sh ./kafka_*/config/server.properties
+    - ./kafka_*/bin/kafka-server-start.sh ./kafka_*/config/server.properties:
+        background: true
 
 dependencies:
   pre:
