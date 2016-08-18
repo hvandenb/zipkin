@@ -10,10 +10,12 @@ machine:
     - curl -SL http://www.us.apache.org/dist/kafka/0.8.2.2/kafka_2.11-0.8.2.2.tgz | tar xz
     - ./kafka_*/bin/kafka-server-start.sh ./kafka_*/config/server.properties:
         background: true
+  environment:
+    MYSQL_USER=ubuntu
 
 dependencies:
   override:
-    - MYSQL_USER=ubuntu ./mvnw install -nsu
+  - ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
 
 database:
   override:
