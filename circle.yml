@@ -13,15 +13,10 @@ dependencies:
   pre:
     - sudo apt-get update; sudo apt-get install zookeeperd
   override:
-    - ./mvnw dependency:go-offline -nsu
+    - MYSQL_USER=ubuntu ./mvnw install -nsu
 
 database:
   override:
     - mysql -u ubuntu -e 'SET GLOBAL innodb_file_format=Barracuda'
     - mysql -u ubuntu -e 'create database if not exists zipkin'
     - mysql -u ubuntu -Dzipkin < zipkin-storage/mysql/src/main/resources/mysql.sql
-
-test:
-  override:
-    - MYSQL_USER=ubuntu ./mvnw install -nsu
-
