@@ -5,11 +5,13 @@ machine:
     - elasticsearch
   java:
     version: openjdk8
+  post:
+    - curl -SL http://www.us.apache.org/dist/kafka/0.8.2.2/kafka_2.11-0.8.2.2.tgz | tar xz
+    - nohup bash -c "cd kafka_* && bin/kafka-server-start.sh config/server.properties >/dev/null 2>&1"
 
 dependencies:
   pre:
     - sudo apt-get update; sudo apt-get install zookeeperd
-    - curl -SL http://www.us.apache.org/dist/kafka/0.8.2.2/kafka_2.11-0.8.2.2.tgz | tar xz
   override:
     - ./mvnw dependency:go-offline -nsu
 
@@ -18,7 +20,6 @@ database:
     - mysql -u ubuntu -e 'SET GLOBAL innodb_file_format=Barracuda'
     - mysql -u ubuntu -e 'create database if not exists zipkin'
     - mysql -u ubuntu -Dzipkin < zipkin-storage/mysql/src/main/resources/mysql.sql
-    - nohup bash -c "cd kafka_* && bin/kafka-server-start.sh config/server.properties >/dev/null 2>&1"
 
 test:
   override:
