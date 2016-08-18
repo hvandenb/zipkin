@@ -27,6 +27,7 @@ machine:
         background: true
   environment:
     MYSQL_USER: ubuntu
+    MYSQL_DB: circle_test
 
 dependencies:
   override:
@@ -38,8 +39,7 @@ dependencies:
 database:
   override:
     - mysql -u ubuntu -e 'SET GLOBAL innodb_file_format=Barracuda'
-    - mysql -u ubuntu -e 'create database if not exists zipkin'
-    - mysql -u ubuntu -Dzipkin < zipkin-storage/mysql/src/main/resources/mysql.sql
+    - mysql -u ubuntu circle_test < zipkin-storage/mysql/src/main/resources/mysql.sql
 
 test:
   post:
