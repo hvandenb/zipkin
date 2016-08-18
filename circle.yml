@@ -6,13 +6,12 @@ machine:
   java:
     version: openjdk8
   post:
+    - sudo apt-get update; sudo apt-get install zookeeperd
     - curl -SL http://www.us.apache.org/dist/kafka/0.8.2.2/kafka_2.11-0.8.2.2.tgz | tar xz
     - ./kafka_*/bin/kafka-server-start.sh ./kafka_*/config/server.properties:
         background: true
 
 dependencies:
-  pre:
-    - sudo apt-get update; sudo apt-get install zookeeperd
   override:
     - MYSQL_USER=ubuntu ./mvnw install -nsu
 
