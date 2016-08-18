@@ -20,3 +20,8 @@ database:
     - mysql -u ubuntu -e 'SET GLOBAL innodb_file_format=Barracuda'
     - mysql -u ubuntu -e 'create database if not exists zipkin'
     - mysql -u ubuntu -Dzipkin < zipkin-storage/mysql/src/main/resources/mysql.sql
+
+test:
+  post:
+    - mkdir -p $CIRCLE_TEST_REPORTS/junit/
+    - find . -type f -regex ".*/target/surefire-reports/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
