@@ -34,6 +34,7 @@ dependencies:
     - ./mvnw install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
   cache_directories:
     - "kafka_*"
+    - "~/.npm"
 
 
 database:
