@@ -41,7 +41,7 @@ public class ZooKeeperCollectorSamplerTest {
     }
     sampler = new ZooKeeperCollectorSampler.Builder()
         .basePath(basePath())
-        .updateFrequency(1) // least possible value
+        .updateFrequency(2) // 1 is least, but larger in case the build is slow and 1 causes flakes
         .build(zookeeper.client);
     collector = Collector.builder(getClass())
         .sampler(sampler)
@@ -64,12 +64,12 @@ public class ZooKeeperCollectorSamplerTest {
     // Until the update interval, we'll see a store rate of zero
     assertThat(sampler.storeRate.get()).isZero();
 
-    // Await until update interval passes (1 second + fudge)
-    Thread.sleep(1000); // let the update interval pass
+    // Await until update interval passes (2 seconds + fudge)
+    Thread.sleep(2100); // let the update interval pass
 
-    // since update frequency is secondly, the rate exported to ZK will be the amount stored * 60
+    // since update frequency is every 2 seconds, the rate exported to ZK will be the amount * 30
     assertThat(sampler.storeRate.get())
-        .isEqualTo(LOTS_OF_SPANS.length * 60);
+        .isEqualTo(LOTS_OF_SPANS.length * 30);
     assertThat(storeRateFromZooKeeper(sampler.groupMember))
         .isEqualTo(sampler.storeRate.get());
   }
