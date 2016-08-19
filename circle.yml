@@ -31,7 +31,9 @@ machine:
 
 dependencies:
   override:
+    - sudo apt-get install xsltproc
     - ./circleci/go-offline.sh
+    - ./mvnw frontend:npm -pl zipkin-ui
   cache_directories:
     - "~/.npm"
 
