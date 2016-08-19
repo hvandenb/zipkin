@@ -36,7 +36,7 @@ dependencies:
     - ./mvnw frontend:install-node-and-npm frontend:npm -pl zipkin-ui
   cache_directories:
     - "~/.npm"
-    - "zipkin/zipkin-ui/node_modules"
+    - "zipkin-ui/node_modules"
 
 database:
   override:
