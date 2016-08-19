@@ -16,6 +16,7 @@ package zipkin.collector.zookeeper;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import zipkin.Span;
 import zipkin.collector.Collector;
 import zipkin.internal.CallbackCaptor;
@@ -27,8 +28,8 @@ import static org.assertj.core.api.Assertions.withinPercentage;
 import static zipkin.TestObjects.LOTS_OF_SPANS;
 
 public class ZooKeeperCollectorSamplerTest {
-  static final String PREFIX = "/" + ZooKeeperCollectorSamplerTest.class.getSimpleName();
   @Rule public ZooKeeperRule zookeeper = new ZooKeeperRule();
+  @Rule public TestName testName = new TestName();
 
   Collector collector;
   InMemoryStorage storage = new InMemoryStorage();
@@ -39,7 +40,7 @@ public class ZooKeeperCollectorSamplerTest {
       sampler.close();
     }
     sampler = new ZooKeeperCollectorSampler.Builder()
-        .basePath(PREFIX)
+        .basePath(basePath())
         .updateFrequency(1) // least possible value
         .build(zookeeper.client);
     collector = Collector.builder(getClass())
@@ -49,7 +50,7 @@ public class ZooKeeperCollectorSamplerTest {
 
   @Test public void sampleRateReadFromZookeeper() throws Exception {
     // Simulates an existing sample rate, set from connectString
-    zookeeper.create(PREFIX + "/sampleRate", "0.9");
+    zookeeper.create(basePath() + "/sampleRate", "0.9");
 
     accept(LOTS_OF_SPANS);
 
@@ -81,8 +82,12 @@ public class ZooKeeperCollectorSamplerTest {
   }
 
   int storeRateFromZooKeeper(String id) throws Exception {
-    byte[] data = zookeeper.client.getData().forPath(PREFIX + "/storeRates/" + id);
+    byte[] data = zookeeper.client.getData().forPath(basePath() + "/storeRates/" + id);
     return data.length == 0 ? 0 : Integer.parseInt(new String(data));
+  }
+
+  private String basePath() {
+    return "/" + testName.getMethodName();
   }
 }
 
