@@ -17,6 +17,8 @@ set -xeuo pipefail
 
 if [ $# -eq 1 ]; then
     # After releasing a non-SNAPSHOT version
+    # We need this extra logic because by the time `publish-stable.sh` is finished,
+    # the current project version is (release-version + 0.0.1)-SNAPSHOT
     version="$(echo $1 | sed 's/^release-//')"
 else
     # After releasing a SNAPSHOT version
