@@ -36,7 +36,7 @@ fi
 #     CircleCI only tags with a matching `deployment` section in their
 #     circle.yml trigger builds
 ./mvnw --batch-mode -s ./.settings.xml -Prelease -nsu \
-       -DreleaseVersion="$(release_version)" \
+       -DreleaseVersion="$(echo $CIRCLE_TAG | sed 's/^release-//')" \
        -DscmCommentPrefix='[maven-release-plugin][skip ci] ' \
        -Darguments="-DskipTests" \
        release:prepare
