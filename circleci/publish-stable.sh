@@ -15,22 +15,19 @@
 
 set -xueo pipefail
 
-safe_checkout_master() {
-    # We need to be on a branch for release:perform to be able to create
-    # commits, and we want that branch to be master. But we also want to make
-    # sure that we build and release exactly the tagged version, so we verify
-    # that the remote master is where our tag is.
-    git checkout -B master
-    git fetch origin master:origin/master
-    commit_local_master="$(git show --pretty='format:%H' master)"
-    commit_remote_master="$(git show --pretty='format:%H' origin/master)"
-    if [ "$commit_local_master" != "$commit_remote_master" ]; then
-        echo "Master on remote 'origin' has commits since the version under release, aborting"
-        exit 1
-    fi
-}
+# We need to be on a branch for release:perform to be able to create
+# commits, and we want that branch to be master. But we also want to make
+# sure that we build and release exactly the tagged version, so we verify
+# that the remote master is where our tag is.
+git checkout -B master
+git fetch origin master:origin/master
+commit_local_master="$(git show --pretty='format:%H' master)"
+commit_remote_master="$(git show --pretty='format:%H' origin/master)"
+if [ "$commit_local_master" != "$commit_remote_master" ]; then
+    echo "Master on remote 'origin' has commits since the version under release, aborting"
+    exit 1
+fi
 
-safe_checkout_master
 # This creates
 #   - A commit in git that removes the `-SNAPSHOT` from the version.
 #     This commit will not trigger a separate build due to the [skip ci] in the
